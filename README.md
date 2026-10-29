@@ -3,7 +3,7 @@
 Analysis code for the manuscript:
 
 > **Age- and Period-Stratified Associations Between Ambient Fungal Spore Exposure and Asthma Healthcare Utilization in the San Juan Metropolitan Area, Puerto Rico, 2018–2021**
-> Benjamín Bolaños-Rosero, Cláudia I. Pereira Moreira, Catalina S. Robles-Rivera, Félix E. Rivera-Mariani
+> Benjamín Bolaños-Rosero, Claudia I. Pereira Moreira, Catalina S. Robles-Rivera, Félix E. Rivera-Mariani
 
 
 The R scripts in this repository produced the tables, figures and supplementary material reported in that manuscript.
