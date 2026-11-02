@@ -1,5 +1,7 @@
 # Fungal Spores and Asthma Healthcare Utilization in San Juan, Puerto Rico (2018–2021)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23898463.svg)](https://doi.org/10.5281/zenodo.23898463)
+
 Analysis code for the manuscript:
 
 > **Age- and Period-Stratified Associations Between Ambient Fungal Spore Exposure and Asthma Healthcare Utilization in the San Juan Metropolitan Area, Puerto Rico, 2018–2021**
