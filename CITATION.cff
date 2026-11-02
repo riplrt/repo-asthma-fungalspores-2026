@@ -1,0 +1,67 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "riplrt/repo-asthma-fungalspores-2026: v2"
+version: v2
+date-released: 2026-11-02
+doi: 10.5281/zenodo.23898463
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23898463
+    description: "Zenodo archive of the software release"
+  - type: doi
+    value: 10.3390/aerobiology4040024
+    description: "Associated article in Aerobiology"
+license: MIT
+repository-code: "https://github.com/riplrt/repo-asthma-fungalspores-2026"
+abstract: >-
+  R analysis code for an ecological time-series study of ambient fungal
+  spore exposure and asthma healthcare utilization in the San Juan
+  Metropolitan Area, Puerto Rico, 2018-2021, stratified by age group and
+  period (post-Hurricane María recovery and the COVID-19 pandemic).
+keywords:
+  - fungal spores
+  - aeroallergens
+  - asthma
+  - healthcare utilization
+  - time-series analysis
+  - case-crossover
+  - age stratification
+  - COVID-19 pandemic
+  - Hurricane María
+  - Puerto Rico
+authors:
+  - family-names: Bolaños-Rosero
+    given-names: Benjamín
+    affiliation: "Department of Microbiology and Immunology, School of Medicine, University of Puerto Rico Medical Sciences Campus"
+  - family-names: Pereira Moreira
+    given-names: Claudia I.
+    affiliation: "School of Medicine, University of Puerto Rico Medical Sciences Campus"
+  - family-names: Robles-Rivera
+    given-names: Catalina S.
+    affiliation: "School of Medicine, University of Puerto Rico Medical Sciences Campus"
+  - family-names: Rivera-Mariani
+    given-names: Félix E.
+    affiliation: "Department of Microbiology and Immunology, School of Medicine, University of Puerto Rico Medical Sciences Campus; College of Arts and Sciences, Lynn University; RIPLRT Institute"
+preferred-citation:
+  type: article
+  title: "Age- and Period-Stratified Associations Between Ambient Fungal Spore Exposure and Asthma Healthcare Utilization in the San Juan Metropolitan Area, Puerto Rico, 2018–2021"
+  authors:
+    - family-names: Bolaños-Rosero
+      given-names: Benjamín
+    - family-names: Pereira Moreira
+      given-names: Claudia I.
+    - family-names: Robles-Rivera
+      given-names: Catalina S.
+    - family-names: Rivera-Mariani
+      given-names: Félix E.
+  journal: Aerobiology
+  publisher:
+    name: MDPI
+  volume: 4
+  issue: 4
+  start: 24
+  year: 2026
+  month: 11
+  doi: 10.3390/aerobiology4040024
+  url: "https://doi.org/10.3390/aerobiology4040024"
