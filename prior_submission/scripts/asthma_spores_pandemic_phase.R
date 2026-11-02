@@ -176,7 +176,7 @@ weekly_qc_impute_or_exclude_pphase <- function(df_pphase, value_col_pphase, base
            -week_excluded_tmp_pphase, -imputed_day_tmp_pphase, -value_clean_tmp_pphase)
 }
 
-# ---- weather (defensive unit handling) ----
+# ---- weather (unit handling) ----
 needs_div10_pphase <- function(x_pphase, thr_pphase) {
   x_pphase <- suppressWarnings(as.numeric(x_pphase))
   q_pphase <- suppressWarnings(quantile(abs(x_pphase), probs = 0.99, na.rm = TRUE, names = FALSE))

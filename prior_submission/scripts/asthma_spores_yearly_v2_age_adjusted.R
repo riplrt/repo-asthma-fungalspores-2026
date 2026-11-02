@@ -71,7 +71,7 @@ out_dir_v2_a_adj <- "statistical_results"
 dir.create(out_dir_v2_a_adj, showWarnings = FALSE, recursive = TRUE)
 
 # ===========================================================
-# 2) HELPERS (FIXED)
+# 2) HELPERS
 # ===========================================================
 
 parse_date_any_v2_a_adj <- function(x) {

@@ -3,11 +3,11 @@
 ## Figure 1: Study-Area Map with UPR Burkard Sampler
 ## Focus:  Six study municipalities + Caguas, 2020 Census tract population
 ## Station point: UPR Medical Sciences Campus rooftop Burkard sampler
-##   (18.3986 N, -66.0747 W; author-supplied 2026-10-19), replacing the NOAA
+##   (18.3986 N, -66.0747 W; coordinates confirmed 2026-10-19), replacing the NOAA
 ##   airport point (RQW00011641) used in 01_representativeness_map_tables.R
 ##
 ## Data-only re-export (boundaries + census population + station point);
-##   no statistical model is run. The original script is NOT modified.
+##   no statistical model is run.
 ## Requirements: sf, tigris, tidycensus, ggplot2, scales, dplyr, readr; a Census
 ##   API key available to tidycensus. Run from any working directory.
 ##
@@ -27,7 +27,7 @@ norm_key <- function(x) x |> iconv(to = "ASCII//TRANSLIT", sub = "") |> toupper(
 muni_study6 <- c("San Juan", "Guaynabo", "Carolina", "Trujillo Alto", "Canovanas", "Loiza")
 muni_with_caguas <- c(muni_study6, "Caguas")
 
-# Burkard sampler, rooftop, UPR Medical Sciences Campus (author-supplied, 2026-10-19)
+# Burkard sampler, rooftop, UPR Medical Sciences Campus (coordinates confirmed 2026-10-19)
 station_tbl <- tibble::tibble(station_name = "UPR MSC rooftop Burkard sampler (NAB San Juan)",
                               station_lat = 18.3986, station_lon = -66.0747)
 

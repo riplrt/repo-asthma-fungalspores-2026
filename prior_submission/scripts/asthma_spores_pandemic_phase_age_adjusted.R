@@ -1,5 +1,5 @@
 ############################################################
-## Spores ↔ Asthma models: Baseline vs Pandemic Phase BY AGE GROUP (FIXED)
+## Spores ↔ Asthma models: Baseline vs Pandemic Phase BY AGE GROUP
 ## San Juan health region (claims) + San Juan station spores + SJU weather
 ##
 ## A) Baseline (2018–2019) modeled jointly, with year-specific spores effect BY AGE:
@@ -218,7 +218,7 @@ weekly_qc_impute_or_exclude_pphase_age <- function(df_pphase_age, value_col_ppha
            -week_excluded_tmp_pphase_age, -imputed_day_tmp_pphase_age, -value_clean_tmp_pphase_age)
 }
 
-# ---- weather (defensive unit handling) ----
+# ---- weather (unit handling) ----
 needs_div10_pphase_age <- function(x_pphase_age, thr_pphase_age) {
   x_pphase_age <- suppressWarnings(as.numeric(x_pphase_age))
   q_pphase_age <- suppressWarnings(quantile(abs(x_pphase_age), probs = 0.99, na.rm = TRUE, names = FALSE))
@@ -491,8 +491,8 @@ daily_pphase_age <- daily_outcome_pphase_age %>%
   arrange(age_group_pphase_age, date) %>%
   group_by(age_group_pphase_age) %>%
   mutate(
-    # NOTE: MA7 computed within age_group across full time range (crosses year boundaries).
-    # If you prefer within-year MA7, group_by(age_group_pphase_age, year_pphase_age) instead.
+    # MA7 is computed within age group over the full period, so it crosses year boundaries.
+    # For a within-year MA7, group_by(age_group_pphase_age, year_pphase_age) instead.
     spores_10k_ma7_pphase_age = zoo::rollapply(spores_10k_pphase_age, width = 7, FUN = mean,
                                           align = "right", fill = NA_real_, partial = FALSE)
   ) %>%
@@ -526,21 +526,21 @@ weekly_baseline_pphase_age <- daily_pphase_age %>%
   ) %>%
   filter(!spores_week_excluded_pphase_age) %>%
   filter(!is.na(spores_cum_wk_pphase_age)) %>%
-  # ADD: Filter out rows with NA in weather covariates
+  # Drop weeks with missing weather covariates
   filter(if_all(ends_with("_wkmean_pphase_age"), ~ !is.na(.x))) %>%
-  # ADD: Filter out infinite values in spores
+  # Drop non-finite spore totals
   filter(is.finite(spores_cum_wk_pphase_age)) %>%
   mutate(
     year_f_pphase_age = factor(year_pphase_age),
     age_group_pphase_age = factor(age_group_pphase_age, levels = age_levels_pphase_age)
   )
 
-# ADD: Check if we have sufficient data
+# Stop if nothing is left after filtering
 if (nrow(weekly_baseline_pphase_age) == 0) {
   stop("No valid weekly baseline data after filtering. Check spore and weather data availability.")
 }
 
-# ADD: Print diagnostic information
+# Baseline data summary
 cat("\n=== Data Summary for Baseline Models ===\n")
 cat("Number of weeks:", nrow(weekly_baseline_pphase_age), "\n")
 cat("Age groups:", paste(levels(weekly_baseline_pphase_age$age_group_pphase_age), collapse = ", "), "\n")
@@ -590,7 +590,7 @@ fit_wk_nb_pphase_age <- gam(
 weekly_baseline_logit_pphase_age <- weekly_baseline_pphase_age %>% 
   filter(total_claims_wk_pphase_age > 0)
 
-# ADD: Comprehensive diagnostic checks
+# Logit data checks
 cat("\n=== Logit Model Data Summary ===\n")
 cat("Number of weeks with claims > 0:", nrow(weekly_baseline_logit_pphase_age), "\n")
 logit_years_pphase_age <- sort(unique(weekly_baseline_logit_pphase_age$year_pphase_age))
@@ -670,12 +670,12 @@ if (length(logit_years_pphase_age) >= 2 && n_age_groups_logit >= 2 && min_obs_pe
 
 cat("\n=== Fitting baseline weekly logit model (BY AGE) ===\n")
 
-# ADD: Check if we have enough data for logit model
+# Skip the logit model if there are fewer than 20 weeks with claims
 if (nrow(weekly_baseline_logit_pphase_age) < 20) {
   cat("WARNING: Only", nrow(weekly_baseline_logit_pphase_age), "weeks with claims > 0.\n")
   cat("Skipping logit model due to insufficient data.\n")
   
-  # Create placeholder results
+  # Empty result row so downstream code still runs
   baseline_logit_effects_by_year_age_pphase_age <- tibble(
     age_group_pphase_age = "insufficient_data",
     year_f_pphase_age = "insufficient_data",
@@ -741,7 +741,7 @@ if (nrow(weekly_baseline_logit_pphase_age) < 20) {
         mutate(year_f_pphase_age = "pooled_simple")
     }
   } else {
-    # Original extraction code for successful fit
+    # Model converged: extract effects
     if (length(logit_years_pphase_age) >= 2 && n_age_groups_logit >= 2 && min_obs_per_group >= 3) {
       baseline_logit_effects_by_year_age_pphase_age <- get_group_effects_2way_pphase_age(
         fit_pphase_age = fit_wk_logit_pphase_age,
@@ -795,7 +795,7 @@ k_doy_pphase_age <- min(30, max(6, floor(n_days_pphase_age / 50)))
 
 day_weather_cols_pphase_age <- intersect(weather_covars_use_pphase_age, names(daily_phase_pphase_age))
 
-# ADD: Aggressive pre-filtering BEFORE formula creation
+# Drop incomplete rows before building the formula
 daily_phase_pphase_age <- daily_phase_pphase_age %>%
   filter(
     !is.na(spores_10k_ma7_pphase_age),
@@ -817,12 +817,12 @@ if (length(day_weather_cols_pphase_age) > 0) {
     filter(if_all(all_of(day_weather_cols_pphase_age), ~ !is.na(.x) & is.finite(.x)))
 }
 
-# DROP any rows with any remaining NA/Inf in any column (nuclear option)
+# Drop any remaining rows with NA or Inf in any column
 daily_phase_pphase_age <- daily_phase_pphase_age %>%
   filter(complete.cases(.)) %>%
   filter(if_all(where(is.numeric), is.finite))
 
-# ADD: Check the actual model matrix for issues
+# Check the model matrix before fitting
 cat("\n=== Pre-flight checks before model fitting ===\n")
 
 # Test model matrix creation
@@ -877,7 +877,7 @@ cat("spores_10k_ma7:", range(daily_phase_pphase_age$spores_10k_ma7_pphase_age), 
 cat("doy:", range(daily_phase_pphase_age$doy_pphase_age), "\n")
 cat("date_num:", range(daily_phase_pphase_age$date_num_pphase_age), "\n")
 
-# ADD: Scale date_num to prevent numerical issues
+# Standardize date_num for numerical stability
 daily_phase_pphase_age <- daily_phase_pphase_age %>%
   mutate(
     date_num_scaled_pphase_age = scale(date_num_pphase_age)[,1],
@@ -886,7 +886,7 @@ daily_phase_pphase_age <- daily_phase_pphase_age %>%
 
 cat("date_num_scaled range:", range(daily_phase_pphase_age$date_num_scaled_pphase_age), "\n")
 
-# MODIFY: Use scaled date_num and simpler model
+# Daily NB uses the standardized date_num
 f_day_nb_pphase_age <- as.formula(
   paste0(
     "total_claims_pphase_age ~ spores_10k_ma7_pphase_age * pandemic_phase_pphase_age * age_group_pphase_age + ",
@@ -926,7 +926,7 @@ phase_nb_effects_pphase_age <- get_group_effects_2way_pphase_age(
   label_pphase_age = "RR_pphase_age"
 )
 
-# ADD: Create and fit the daily logit model
+# Daily logit model (days with at least one claim)
 daily_phase_logit_cc_pphase_age <- daily_phase_pphase_age %>%
   filter(total_claims_pphase_age > 0)
 
